@@ -1,6 +1,6 @@
 <?php
 
-namespace TenEleven\Bundle\GeolocatableBundle\DependencyInjection;
+namespace Teneleven\Bundle\GeolocatorBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Loader;
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
-class TenElevenGeolocatableExtension extends Extension
+class TenelevenGeolocatorExtension extends Extension
 {
     /**
      * {@inheritDoc}
@@ -24,5 +24,10 @@ class TenElevenGeolocatableExtension extends Extension
 
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
+    }
+
+    public function getAlias()
+    {
+        return 'teneleven_geolocator';
     }
 }

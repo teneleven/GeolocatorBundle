@@ -5,17 +5,11 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="teneleven.geolocatable.adapter.class">Geocoder\HttpAdapter\CurlHttpAdapter</parameter>
-        <parameter key="teneleven.geolocatable.provider.class">Geocoder\Provider\GoogleMapsProvider</parameter>
-        <parameter key="teneleven.geolocatable.subscriber.class">TenEleven\Bundle\GeolocatableBundle\Doctrine\Event\GeolocatableEventSubscriber</parameter>
+        <parameter key="teneleven.geo_locator.subscriber.class">Teneleven\Bundle\GeolocatorBundle\Doctrine\Event\GeoLocatableEventSubscriber</parameter>
     </parameters>
     <services>
-        <service id="teneleven.geolocatable.adapter" class="%teneleven.geolocatable.adapter.class%" />
-        <service id="teneleven.geolocatable.provider" class="%teneleven.geolocatable.provider.class%">
-            <argument type="service" id="teneleven.geolocatable.adapter" />
-        </service>
-        <service id="teneleven.geolocatable.subscriber" class="%teneleven.geolocatable.subscriber.class%">
-            <argument type="service" id="teneleven.geolocatable.provider" />
+        <service id="teneleven.geo_locator.subscriber" class="%teneleven.geo_locator.subscriber.class%">
+            <argument type="service" id="teneleven.geo_locator.geocoder" />
             <tag name="doctrine.event_subscriber" />
         </service>
     </services>

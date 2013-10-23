@@ -1,23 +1,25 @@
 <?php
 
-namespace TenEleven\Bundle\GeolocatableBundle\Doctrine\Event;
+namespace Teneleven\Bundle\GeolocatorBundle\Doctrine\Event;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 
-use Geocoder\Provider\ProviderInterface;
-use TenEleven\Bundle\GeolocatableBundle\Model\GeolocatableInterface;
+use Geocoder\GeocoderInterface;
+use Teneleven\Bundle\GeolocatorBundle\Model\GeolocatableInterface;
 
 /**
  * Subscribes to Doctrine prePersist and preUpdate to update an Entity's latitude and longitude
  *
  * @author justinhilles
  */
-class GeolocatableEventSubscriber implements EventSubscriber {
+class GeoLocatableEventSubscriber implements EventSubscriber
+{
     protected $geocoder;
     
-    public function __construct(ProviderInterface $geocoder){
+    public function __construct(GeocoderInterface $geocoder)
+    {
         $this->geocoder = $geocoder;
     }
 
@@ -26,7 +28,8 @@ class GeolocatableEventSubscriber implements EventSubscriber {
     *
     * @return array
     */
-    public function getSubscribedEvents(){
+    public function getSubscribedEvents()
+    {
         return array(
             'prePersist',
             'preUpdate',
@@ -38,47 +41,62 @@ class GeolocatableEventSubscriber implements EventSubscriber {
      * 
      * @param LifecycleEventArgs $eventArgs 
      */
-    public function prePersist(LifecycleEventArgs $eventArgs){
-        if(($entity = $eventArgs->getEntity()) instanceof GeolocatableInterface){
-            if( !$entity->getLatitude() || !$entity->getLongitude()){
-                $this->geocodeEntity($entity, $this->geocoder);
-            }
+    public function prePersist(LifecycleEventArgs $eventArgs)
+    {
+        $entity = $eventArgs->getEntity();
+
+        if (!$entity instanceof GeoLocatableInterface) {
+            return;
         }
+
+        if ($entity->getLatitude() || $entity->getLongitude()) {
+            return;
+        }
+
+        $this->geocodeEntity($entity);
     }
     
     /**
-     * Sets an updating Entity's latitude and longitude if not present 
-     * or any part of address updated
+     * Sets and updates Entity's latitude and longitude if not present
+     * or any part of address was updated
      * 
      * @param PreUpdateEventArgs $eventArgs 
      */
-    public function preUpdate(PreUpdateEventArgs $eventArgs){
-        if(($entity = $eventArgs->getEntity()) instanceof GeolocatableInterface){
-            if( !$dealer->getLatitude() || !$dealer->getLongitude() 
-                || $eventArgs->hasChangedField('street') || $eventArgs->hasChangedField('city') 
-                || $eventArgs->hasChangedField('state') || $eventArgs->hasChangedField('zip')){
-                $this->geocodeAddress($dealer, $this->geocoder);
-                
-                $em = $eventArgs->getEntityManager();
-                $uow = $em->getUnitOfWork();
-                $meta = $em->getClassMetadata(get_class($dealer));
-                $uow->recomputeSingleEntityChangeSet($meta, $dealer);
-            }
+    public function preUpdate(PreUpdateEventArgs $eventArgs)
+    {
+        $entity = $eventArgs->getEntity();
+
+        if (!$entity instanceof GeolocatableInterface) {
+            return;
+        }
+
+        //detect update need
+        $needsUpdating = false;
+
+        if ($needsUpdating) {
+            $this->geocodeEntity($entity);
+
+            $em = $eventArgs->getEntityManager();
+            $uow = $em->getUnitOfWork();
+            $meta = $em->getClassMetadata(get_class($entity));
+            $uow->recomputeSingleEntityChangeSet($meta, $entity);
         }
     }
     
     /**
      * Geocode and set the Entity's latitude and longitude
-     * 
-     * @param type $apartment 
      */
-    private function geocodeEntity(GeolocatableInterface $entity, ProviderInterface $geocoder){
-        $result = $geocoder->getGeocodedData($entity->getGeolocatableAddress());
+    private function geocodeEntity(GeoLocatableInterface $entity)
+    {
+        $address = ''; //get this somehow
 
-        if(isset($result[0])){
-            $entity->setLatitude($result[0]['latitude']);
-            $entity->setLongitude($result[0]['longitude']);            
-        }
+        //exception if not
+
+        $result = $this->geocoder->geocode($address);
+
+        //exception if not
+
+        $entity->setLatitude($result->getLatitude());
+        $entity->setLongitude($result->getLongitude());
     }
-    
 }

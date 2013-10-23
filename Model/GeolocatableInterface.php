@@ -1,8 +1,8 @@
 <?php
 
-namespace TenEleven\Bundle\GeolocatableBundle\Model;
+namespace Teneleven\Bundle\GeolocatorBundle\Model;
 
-interface GeolocatableInterface
+interface GeoLocatableInterface
 {
     /**
      * Get Latitude.
@@ -21,16 +21,10 @@ interface GeolocatableInterface
      *
      * @return float
      */
-    public function getLongitude();	
+    public function getLongitude();
 
     /**
      * Set Longitude.
      */
     public function setLongitude($longitude);
-
-    /**
-     * Get a string of address that Provider can use to geolocate
-     * @return string Address
-     */
-    public function getGeolocatableAddress();
 }
