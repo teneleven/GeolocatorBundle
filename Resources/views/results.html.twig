@@ -1,4 +1,4 @@
-{% extends 'TenelevenGeolocatorBundle::layout.html.twig' %}
+{% extends teneleven_geolocator_layout is defined ? teneleven_geolocator_layout : 'TenelevenGeolocatorBundle::layout.html.twig' %}
 
 {# you can define block teneleven_geolocator_item_window to customize info window content for each location #}
 
@@ -32,12 +32,12 @@
         </div>
     </div>
     <div class="row-gutterless">
-        <div class="col-sm-8 te-geolocator-map-container" data-map-id="{{ map.javascriptVariable }}">
+        <div class="col-sm-8 teneleven-geolocator-map-container" data-map-id="{{ map.javascriptVariable }}">
             {{ google_map_container(map) }}
         </div>
         <div class="col-sm-4">
             {% block teneleven_geolocator_list %}
-            <ul class="list-group slimscroll teneleven-geolocator-list">
+            <ul class="list-group slimscroll teneleven-geolocator-list" style="height: {{ map.stylesheetOptions.height }}; overflow: auto;">
                 {% for location in locations %}
                     <li class="list-group-item teneleven-geolocator-item"{% if jsIds.markers[location.id] is defined %} data-marker-id="{{ jsIds.markers[location.id] }}"{% endif %}{% if jsIds.windows[location.id] is defined %} data-window-id="{{ jsIds.windows[location.id] }}"{% endif %}>
                         {% block teneleven_geolocator_list_item %}

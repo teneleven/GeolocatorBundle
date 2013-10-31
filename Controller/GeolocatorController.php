@@ -11,6 +11,8 @@ use Teneleven\Bundle\GeolocatorBundle\Provider\LocationProviderInterface;
 class GeolocatorController extends Controller
 {
     /**
+     * Displays a geo-locator screen with map, form, and locations
+     *
      * @param string $entity the entity key that the provider is registered under
      * @param Request $request
      * @param string $template
@@ -51,47 +53,50 @@ class GeolocatorController extends Controller
         ));
     }
 
+    /**
+     * Builds a map of locations
+     *
+     * @param string $template
+     * @param array $locations
+     * @param array $jsIds
+     * @return \Ivory\GoogleMap\Map
+     */
     protected function buildMap($template, $locations, &$jsIds)
     {
-        /* @var $map \Ivory\GoogleMap\Map */
-        $map = $this->get('ivory_google_map.map');
+        $map = $this->getMap();
 
         $twigTemplate = $this->get('twig')->loadTemplate($template);
 
-        $counter = 0;
         foreach ($locations as $location) {
 
+            //consider exception?
             if (!$location instanceof GeolocatableInterface) {
                 continue;
             }
 
-            //hack, these should not even be here
+            //these should not even be here - consider exception
             if (!$location->getLatitude() || !$location->getLongitude()) {
                 continue;
             }
 
-            /* @var $marker \Ivory\GoogleMap\Overlays\Marker */
-            $marker = $this->get('ivory_google_map.marker');
+            $marker = $this->getMarker();
             $marker->setPosition($location->getLatitude(), $location->getLongitude());
 
             if ($twigTemplate->hasBlock('teneleven_geolocator_item_window')) {
 
-                /* @var $infoWindow \Ivory\GoogleMap\Overlays\InfoWindow */
-                $infoWindow = $this->get('ivory_google_map.info_window');
+                $infoWindow = $this->getInfoWindow();
                 $infoWindow->setContent($twigTemplate->renderBlock(
                     'teneleven_geolocator_item_window',
                     array('location' => $location)
                 ));
 
                 $marker->setInfoWindow($infoWindow);
-                $jsIds['windows'][$location->getId()] = $infoWindow->getJavascriptVariable();
+                $jsIds['windows'][$location->getId()] = $infoWindow->getJavascriptVariable(); //ID can not be relied on..
             }
 
             $jsIds['markers'][$location->getId()] = $marker->getJavascriptVariable();
 
             $map->addMarker($marker);
-
-            $counter++;
         }
 
         return $map;
@@ -106,5 +111,29 @@ class GeolocatorController extends Controller
         $providers = $this->get('teneleven.geolocator.providers');
 
         return $providers->getProvider($entity);
+    }
+
+    /**
+     * @return \Ivory\GoogleMap\Map
+     */
+    public function getMap()
+    {
+        return $this->get('ivory_google_map.map');
+    }
+
+    /**
+     * @return \Ivory\GoogleMap\Overlays\Marker
+     */
+    public function getMarker()
+    {
+        return $this->get('ivory_google_map.marker');
+    }
+
+    /**
+     * @return \Ivory\GoogleMap\Overlays\InfoWindow
+     */
+    public function getInfoWindow()
+    {
+        return $this->get('ivory_google_map.info_window');
     }
 }
