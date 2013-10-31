@@ -10,7 +10,7 @@
                 <p class="lead-in">Customize this template by extending it on the project level and overriding specific blocks.</p>
             {% endblock %}
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-4 teneleven-geolocator-form-container">
             {% block teneleven_geolocator_form %}
                 <legend>Search by Address or Zip Code</legend>
                 {{ form_errors(form) }}
@@ -31,13 +31,13 @@
             {% endif %}
         </div>
     </div>
-    <div class="row-gutterless">
+    <div class="row-gutterless teneleven-geolocator-content">
         <div class="col-sm-8 teneleven-geolocator-map-container" data-map-id="{{ map.javascriptVariable }}">
             {{ google_map_container(map) }}
         </div>
         <div class="col-sm-4">
             {% block teneleven_geolocator_list %}
-            <ul class="list-group slimscroll teneleven-geolocator-list" style="height: {{ map.stylesheetOptions.height }}; overflow: auto;">
+            <ul class="list-group teneleven-geolocator-list" style="height: {{ map.stylesheetOptions.height }}; overflow: auto;">
                 {% for location in locations %}
                     <li class="list-group-item teneleven-geolocator-item"{% if jsIds.markers[location.id] is defined %} data-marker-id="{{ jsIds.markers[location.id] }}"{% endif %}{% if jsIds.windows[location.id] is defined %} data-window-id="{{ jsIds.windows[location.id] }}"{% endif %}>
                         {% block teneleven_geolocator_list_item %}

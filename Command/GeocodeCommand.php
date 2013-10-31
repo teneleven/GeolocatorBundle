@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Teneleven\Bundle\GeolocatorBundle\Model\GeoLocatableInterface;
+use Teneleven\Bundle\GeolocatorBundle\Exception\AddressExtractionFailedException;
 
 
 /**
@@ -24,6 +24,7 @@ class GeocodeCommand extends ContainerAwareCommand
             ->setName('teneleven:geolocator:geocode')
             ->setDescription('Geocodes an entity type')
             ->addArgument('entity', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'The entity type(s) to encode')
+            ->addOption('flush-interval', null, InputOption::VALUE_REQUIRED, 'Flush every time this many locations have been coded.', 25)
         ;
     }
 
@@ -35,6 +36,7 @@ class GeocodeCommand extends ContainerAwareCommand
         /* @var $providers \Teneleven\Bundle\GeolocatorBundle\Provider\LocationProviderRegistry */
         $providers = $this->getContainer()->get('teneleven.geolocator.providers');
         $entities = $input->getArgument('entity');
+        $flushInterval = $input->getOption('flush-interval');
 
         if (!count($entities)) {
             $entities = array_keys($providers->getProviders());
@@ -46,14 +48,15 @@ class GeocodeCommand extends ContainerAwareCommand
         /* @var $em \Doctrine\ORM\EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
+        $counter = 0;
         foreach ($entities as $entity) {
 
-            $output->write(sprintf('Processing entity type "%s"...', $entity));
+            $output->write(sprintf('Processing entity type <comment>"%s"</comment>...', $entity));
 
             $provider = $providers->getProvider($entity);
             $locations = $provider->getUncodedLocations();
 
-            $output->writeln(sprintf('%s uncoded objects.', count($locations)));
+            $output->writeln(sprintf('<comment>%s</comment> uncoded objects.', count($locations)));
 
             if (!count($locations)) {
                 continue;
@@ -65,18 +68,24 @@ class GeocodeCommand extends ContainerAwareCommand
                     $address = $provider->extractAddress($location);
                     $result = $geocoder->geocode($address);
                     $provider->updateGeocoordinates($location, $result);
-                } catch (\Exception $e) {
+                } catch (AddressExtractionFailedException $e) {
+                    throw $e; //this error indicates a misconfiguration
+                } catch (\Exception $e) { //only catch geolocator exceptions here
                     $output->writeln(sprintf('<error>Error: %s</error>', $e->getMessage()));
                     continue;
                 }
 
                 $output->writeln(sprintf('<info>Success (Lat: %s, Lng: %s)</info>', $location->getLatitude(), $location->getLongitude()));
+                $counter++;
 
-                //consider flushing in between
+                if ($flushInterval && (0 === $counter % $flushInterval)) {
+                    $em->flush();
+                }
             }
 
             $em->flush();
         }
 
+        //add some messaging
     }
 }
