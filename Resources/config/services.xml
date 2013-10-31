@@ -5,12 +5,27 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="teneleven.geo_locator.subscriber.class">Teneleven\Bundle\GeolocatorBundle\Doctrine\Event\GeoLocatableEventSubscriber</parameter>
+        <parameter key="teneleven.geolocator.form.address_lookup.class">Teneleven\Bundle\GeolocatorBundle\Form\Type\AddressLookupType</parameter>
+        <parameter key="teneleven.geolocator.controller.class">Teneleven\Bundle\GeolocatorBundle\Controller\GeolocatorController</parameter>
+        <parameter key="teneleven.geolocator.providers.class">Teneleven\Bundle\GeolocatorBundle\Provider\LocationProviderRegistry</parameter>
+        <parameter key="teneleven.geolocator.object_geocoder.class">Teneleven\Bundle\GeolocatorBundle\ObjectGeocoder</parameter>
     </parameters>
+
     <services>
-        <service id="teneleven.geo_locator.subscriber" class="%teneleven.geo_locator.subscriber.class%">
-            <argument type="service" id="teneleven.geo_locator.geocoder" />
-            <tag name="doctrine.event_subscriber" />
+        <service id="teneleven.geolocator.controller" class="%teneleven.geolocator.controller.class%">
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+        </service>
+        <service id="teneleven.geolocator.providers" class="%teneleven.geolocator.providers.class%" />
+        <service id="teneleven.geolocator.form.address_lookup" class="%teneleven.geolocator.form.address_lookup.class%">
+            <argument type="service">
+                <service class="Teneleven\Bundle\GeolocatorBundle\Form\DataTransformer\StringToGeocodedTransformer">
+                    <argument type="service" id="teneleven.geolocator.geocoder" />
+                </service>
+            </argument>
+            <tag name="form.type" alias="teneleven_geolocator_address_lookup" />
         </service>
     </services>
+
 </container>

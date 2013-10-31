@@ -19,8 +19,14 @@ class TenelevenGeolocatorExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        /**
+         * @todo leverage prepend config to configure google maps and geocoder
+         */
+
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
+
+        $container->setAlias('teneleven.geolocator.geocoder', $config['geocoder_service']);
 
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
