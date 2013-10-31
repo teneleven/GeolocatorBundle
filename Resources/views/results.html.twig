@@ -1,0 +1,105 @@
+{% extends 'TenelevenGeolocatorBundle::layout.html.twig' %}
+
+{# you can define block teneleven_geolocator_item_window to customize info window content for each location #}
+
+{% block teneleven_geolocator_body %}
+    <div class="row">
+        <div class="col-sm-8">
+            {% block teneleven_geolocator_header %}
+                <h1>Anything Locator</h1>
+                <p class="lead-in">Customize this template by extending it on the project level and overriding specific blocks.</p>
+            {% endblock %}
+        </div>
+        <div class="col-sm-4">
+            {% block teneleven_geolocator_form %}
+                <legend>Search by Address or Zip Code</legend>
+                {{ form_errors(form) }}
+                <form class="form-horizontal" role="form" method="GET">
+                    <div class="row-gutterless">
+                        <div class="col-sm-8">
+                            {{ form_widget(form, { 'attr': { 'placeholder': 'Full Address or Zip Code', 'class': 'form-control' } }) }}
+                        </div>
+                        <div class="col-sm-4 last">
+                            <button type="submit" class="btn btn-primary btn-block">Submit <i class="icon icon-dotted-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </form>
+            {% endblock %}
+
+            {% if searchLocation %}
+                <h3>{{ locations|length }} Results around "{{ searchLocation.city }}"</h3>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row-gutterless">
+        <div class="col-sm-8 te-geolocator-map-container" data-map-id="{{ map.javascriptVariable }}">
+            {{ google_map_container(map) }}
+        </div>
+        <div class="col-sm-4">
+            {% block teneleven_geolocator_list %}
+            <ul class="list-group slimscroll teneleven-geolocator-list">
+                {% for location in locations %}
+                    <li class="list-group-item teneleven-geolocator-item"{% if jsIds.markers[location.id] is defined %} data-marker-id="{{ jsIds.markers[location.id] }}"{% endif %}{% if jsIds.windows[location.id] is defined %} data-window-id="{{ jsIds.windows[location.id] }}"{% endif %}>
+                        {% block teneleven_geolocator_list_item %}
+                            <h4>Result Listing</h4>
+                            <p>To be customized.</p>
+                        {% endblock %}
+                    </li>
+                {% endfor %}
+            </ul>
+            {% endblock %}
+        </div>
+    </div>
+    <style>
+        .highlighted {
+            background-color: yellow;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ google_map_js(map) }}
+    <script>
+        if (window.jQuery) {
+
+            var mapId = $('.te-geolocator-map-container').data('map-id');
+            var map = window[mapId];
+            var mapContainer = window[mapId + '_container'];
+
+            function highlightLocation (item) {
+                $('.teneleven-geolocator-list .highlighted').removeClass('highlighted');
+                item.addClass('highlighted');
+            }
+
+            for (var key in mapContainer.markers) {
+                if (mapContainer.markers.hasOwnProperty(key)) {
+                    var marker = mapContainer.markers[key];
+                    google.maps.event.addListener(marker, "click", (function (key) {
+                        return function() {
+                            alert("[data-marker-id='" + key + "']");
+                            var item = $('.teneleven-geolocator-item').find('[data-marker-id="' + key + '"]');
+                            alert(item.length);
+                            highlightLocation(item);
+                        }
+                    }(key)));
+                }
+            }
+
+            $('.teneleven-geolocator-item').click(function() {
+                //close all windows
+                for (var key in mapContainer.closable_info_windows) {
+                    mapContainer.closable_info_windows[key].close();
+                }
+
+                if ($(this).data('marker-id')) {
+                    var marker = mapContainer.markers[$(this).data('marker-id')];
+                    var window = mapContainer.info_windows[$(this).data('window-id')];
+                    window.open(map, marker);
+                }
+
+                highlightLocation($(this));
+            });
+        }
+    </script>
+{% endblock %}
