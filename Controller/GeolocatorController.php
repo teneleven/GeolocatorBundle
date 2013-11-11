@@ -8,6 +8,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Teneleven\Bundle\GeolocatorBundle\Model\GeoLocatableInterface;
 use Teneleven\Bundle\GeolocatorBundle\Provider\LocationProviderInterface;
 
+/**
+ * Geolocator Controller
+ */
 class GeolocatorController extends Controller
 {
     /**
@@ -16,17 +19,18 @@ class GeolocatorController extends Controller
      * @param string $entity the entity key that the provider is registered under
      * @param Request $request
      * @param string $template
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function locate($entity, Request $request, $template = 'TenelevenGeolocatorBundle::results.html.twig')
     {
-        $results = array();
         $provider = $this->getLocationProvider($entity);
-        $form = $this->createForm($provider->getFilterFormType(), null, array('method' => 'GET'));
+        $form = $this->get('form.factory')->createNamed('query', $provider->getFilterFormType(), null, array('method' => 'GET'));
+
+        $results = array();
 
         if ($form->handleRequest($request)->isValid()) {
-            $criteria = $form->getData();
-            $results = $provider->findLocations($criteria);
+            $results = $provider->findLocations($form->getData());
         }
 
         return $this->renderLocations($template, $results, $form);
@@ -35,15 +39,14 @@ class GeolocatorController extends Controller
     /**
      * Helper method to render the response
      *
-     * @param $template
-     * @param $results
+     * @param string $template
+     * @param array $results
      * @param Form $form
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     protected function renderLocations($template, $results, Form $form)
     {
-        $jsIds = array('markers' => array(), 'windows' => array());
-
         return $this->render($template, array(
             'form' => $form->createView(),
             'results' => $results,
@@ -59,13 +62,14 @@ class GeolocatorController extends Controller
      * @param string $template
      * @param array $results
      * @param array $jsIds
+     *
      * @return \Ivory\GoogleMap\Map
      */
     protected function buildMap($template, $results, &$jsIds)
     {
-        $map = $this->getMap();
-
+        $jsIds = array('markers' => array(), 'windows' => array());
         $twigTemplate = $this->get('twig')->loadTemplate($template);
+        $map = $this->getMap();
 
         foreach ($results as $id => $result) {
 
