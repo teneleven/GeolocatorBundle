@@ -1,0 +1,6 @@
+.teneleven-geolocator-item {
+    cursor: pointer;
+}
+.teneleven-geolocator-item.highlighted {
+    background-color: yellow;
+}

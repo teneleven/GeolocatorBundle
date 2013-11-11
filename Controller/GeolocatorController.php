@@ -20,35 +20,35 @@ class GeolocatorController extends Controller
      */
     public function locate($entity, Request $request, $template = 'TenelevenGeolocatorBundle::results.html.twig')
     {
-        $locations = array();
+        $results = array();
         $provider = $this->getLocationProvider($entity);
         $form = $this->createForm($provider->getFilterFormType(), null, array('method' => 'GET'));
 
         if ($form->handleRequest($request)->isValid()) {
             $criteria = $form->getData();
-            $locations = $provider->findLocations($criteria);
+            $results = $provider->findLocations($criteria);
         }
 
-        return $this->renderLocations($template, $locations, $form);
+        return $this->renderLocations($template, $results, $form);
     }
 
     /**
      * Helper method to render the response
      *
      * @param $template
-     * @param $locations
+     * @param $results
      * @param Form $form
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    protected function renderLocations($template, $locations, Form $form)
+    protected function renderLocations($template, $results, Form $form)
     {
         $jsIds = array('markers' => array(), 'windows' => array());
 
         return $this->render($template, array(
             'form' => $form->createView(),
-            'locations' => $locations,
+            'results' => $results,
             'searchLocation' => $form->isSubmitted() && $form->isValid() ? $form->getData() : null,
-            'map' => $this->buildMap($template, $locations, $jsIds),
+            'map' => $this->buildMap($template, $results, $jsIds),
             'jsIds' => $jsIds
         ));
     }
@@ -57,25 +57,21 @@ class GeolocatorController extends Controller
      * Builds a map of locations
      *
      * @param string $template
-     * @param array $locations
+     * @param array $results
      * @param array $jsIds
      * @return \Ivory\GoogleMap\Map
      */
-    protected function buildMap($template, $locations, &$jsIds)
+    protected function buildMap($template, $results, &$jsIds)
     {
         $map = $this->getMap();
 
         $twigTemplate = $this->get('twig')->loadTemplate($template);
 
-        foreach ($locations as $location) {
+        foreach ($results as $id => $result) {
 
-            //consider exception?
+            $location = $result->location;
+
             if (!$location instanceof GeolocatableInterface) {
-                continue;
-            }
-
-            //these should not even be here - consider exception
-            if (!$location->getLatitude() || !$location->getLongitude()) {
                 continue;
             }
 
@@ -87,14 +83,14 @@ class GeolocatorController extends Controller
                 $infoWindow = $this->getInfoWindow();
                 $infoWindow->setContent($twigTemplate->renderBlock(
                     'teneleven_geolocator_item_window',
-                    array('location' => $location)
+                    array('result' => $result)
                 ));
 
                 $marker->setInfoWindow($infoWindow);
-                $jsIds['windows'][$location->getId()] = $infoWindow->getJavascriptVariable(); //ID can not be relied on..
+                $jsIds['windows'][$id] = $infoWindow->getJavascriptVariable();
             }
 
-            $jsIds['markers'][$location->getId()] = $marker->getJavascriptVariable();
+            $jsIds['markers'][$id] = $marker->getJavascriptVariable();
 
             $map->addMarker($marker);
         }

@@ -3,7 +3,9 @@
 
 namespace Teneleven\Bundle\GeolocatorBundle\Provider;
 
-
+/**
+ * Registry for LocationProvider classes
+ */
 class LocationProviderRegistry
 {
     /**
@@ -11,6 +13,9 @@ class LocationProviderRegistry
      */
     protected $providers;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->providers = array();
@@ -25,6 +30,8 @@ class LocationProviderRegistry
     }
 
     /**
+     * Register a provider
+     *
      * @param $key
      * @param LocationProviderInterface $provider
      */
@@ -36,6 +43,8 @@ class LocationProviderRegistry
     }
 
     /**
+     * Is provider registered?
+     *
      * @param $key
      * @return Boolean
      */
@@ -45,6 +54,8 @@ class LocationProviderRegistry
     }
 
     /**
+     * Get specified provider
+     *
      * @param $key
      * @return LocationProviderInterface
      * @throws \InvalidArgumentException

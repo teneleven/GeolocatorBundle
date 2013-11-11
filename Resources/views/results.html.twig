@@ -27,7 +27,7 @@
             {% endblock %}
 
             {% if searchLocation %}
-                <h3>{{ locations|length }} Results around "{{ searchLocation.city }}"</h3>
+                <h3>{{ results|length }} Results around "{{ searchLocation.city }}"</h3>
             {% endif %}
         </div>
     </div>
@@ -38,8 +38,8 @@
         <div class="col-sm-4">
             {% block teneleven_geolocator_list %}
             <ul class="list-group teneleven-geolocator-list" style="height: {{ map.stylesheetOptions.height }}; overflow: auto;">
-                {% for location in locations %}
-                    <li class="list-group-item teneleven-geolocator-item"{% if jsIds.markers[location.id] is defined %} data-marker-id="{{ jsIds.markers[location.id] }}"{% endif %}{% if jsIds.windows[location.id] is defined %} data-window-id="{{ jsIds.windows[location.id] }}"{% endif %}>
+                {% for id, result in results %}
+                    <li class="list-group-item teneleven-geolocator-item"{% if jsIds.markers[id] is defined %} data-marker-id="{{ jsIds.markers[id] }}"{% endif %}{% if jsIds.windows[id] is defined %} data-window-id="{{ jsIds.windows[id] }}"{% endif %}>
                         {% block teneleven_geolocator_list_item %}
                             <h4>Result Listing</h4>
                             <p>To be customized.</p>
@@ -50,56 +50,15 @@
             {% endblock %}
         </div>
     </div>
-    <style>
-        .highlighted {
-            background-color: yellow;
-        }
-    </style>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/tenelevengeolocator/style/frontend.css') }}">
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     {{ google_map_js(map) }}
-    <script>
-        if (window.jQuery) {
-
-            var mapId = $('.te-geolocator-map-container').data('map-id');
-            var map = window[mapId];
-            var mapContainer = window[mapId + '_container'];
-
-            function highlightLocation (item) {
-                $('.teneleven-geolocator-list .highlighted').removeClass('highlighted');
-                item.addClass('highlighted');
-            }
-
-            for (var key in mapContainer.markers) {
-                if (mapContainer.markers.hasOwnProperty(key)) {
-                    var marker = mapContainer.markers[key];
-                    google.maps.event.addListener(marker, "click", (function (key) {
-                        return function() {
-                            alert("[data-marker-id='" + key + "']");
-                            var item = $('.teneleven-geolocator-item').find('[data-marker-id="' + key + '"]');
-                            alert(item.length);
-                            highlightLocation(item);
-                        }
-                    }(key)));
-                }
-            }
-
-            $('.teneleven-geolocator-item').click(function() {
-                //close all windows
-                for (var key in mapContainer.closable_info_windows) {
-                    mapContainer.closable_info_windows[key].close();
-                }
-
-                if ($(this).data('marker-id')) {
-                    var marker = mapContainer.markers[$(this).data('marker-id')];
-                    var window = mapContainer.info_windows[$(this).data('window-id')];
-                    window.open(map, marker);
-                }
-
-                highlightLocation($(this));
-            });
-        }
-    </script>
+    <script type="text/javascript" src="{{ asset('bundles/tenelevengeolocator/js/load-marker-highlights.js') }}"></script>
 {% endblock %}

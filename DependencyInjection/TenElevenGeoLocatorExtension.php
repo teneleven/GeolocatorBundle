@@ -9,9 +9,7 @@ use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader;
 
 /**
- * This is the class that loads and manages your bundle configuration
- *
- * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
+ * This class configures the Teneleven Geolocator bundle
  */
 class TenelevenGeolocatorExtension extends Extension implements PrependExtensionInterface
 {
@@ -48,6 +46,15 @@ class TenelevenGeolocatorExtension extends Extension implements PrependExtension
             'ivory_google_map' => array(
                 'map' => array('width' => "100%", 'height' => "600px", 'auto_zoom' => true),
                 'info_window' => array('auto_close' => true)
+            ),
+            'doctrine' => array(
+                'orm' => array(
+                    'dql' => array(
+                        'numeric_functions' => array(
+                            'GEO_DISTANCE' => 'Craue\GeoBundle\Doctrine\Query\Mysql\GeoDistance'
+                        )
+                    )
+                )
             )
         );
 
