@@ -5,10 +5,14 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="teneleven.geolocator.form.address_lookup.class">Teneleven\Bundle\GeolocatorBundle\Form\Type\AddressLookupType</parameter>
+        <parameter key="teneleven.geolocator.form.geocoded_address.class">Teneleven\Bundle\GeolocatorBundle\Form\Type\GeocodedAddressType</parameter>
+        <parameter key="teneleven.geolocator.form.address_locator.class">Teneleven\Bundle\GeolocatorBundle\Form\Type\AddressLocatorType</parameter>
         <parameter key="teneleven.geolocator.controller.class">Teneleven\Bundle\GeolocatorBundle\Controller\GeolocatorController</parameter>
         <parameter key="teneleven.geolocator.providers.class">Teneleven\Bundle\GeolocatorBundle\Provider\LocationProviderRegistry</parameter>
+        <parameter key="teneleven.geolocator.address_extractors.class">Teneleven\Bundle\GeolocatorBundle\Extractor\AddressExtractorRegistry</parameter>
         <parameter key="teneleven.geolocator.object_geocoder.class">Teneleven\Bundle\GeolocatorBundle\ObjectGeocoder</parameter>
+        <parameter key="teneleven.geolocator.location_provider.class">Teneleven\Bundle\GeolocatorBundle\Provider\LocationProvider</parameter>
+        <parameter key="teneleven.geolocator.address_extractor.property.class">Teneleven\Bundle\GeolocatorBundle\Extractor\AddressPropertyExtractor</parameter>
     </parameters>
 
     <services>
@@ -18,13 +22,17 @@
             </call>
         </service>
         <service id="teneleven.geolocator.providers" class="%teneleven.geolocator.providers.class%" />
-        <service id="teneleven.geolocator.form.address_lookup" class="%teneleven.geolocator.form.address_lookup.class%">
+        <service id="teneleven.geolocator.address_extractors" class="%teneleven.geolocator.address_extractors.class%" />
+        <service id="teneleven.geolocator.form.geocoded_address" class="%teneleven.geolocator.form.geocoded_address.class%">
             <argument type="service">
                 <service class="Teneleven\Bundle\GeolocatorBundle\Form\DataTransformer\StringToGeocodedTransformer">
                     <argument type="service" id="teneleven.geolocator.geocoder" />
                 </service>
             </argument>
-            <tag name="form.type" alias="teneleven_geolocator_address_lookup" />
+            <tag name="form.type" alias="teneleven_geolocator_geocoded_address" />
+        </service>
+        <service id="teneleven.geolocator.form.address_locator" class="%teneleven.geolocator.form.address_locator.class%">
+            <tag name="form.type" alias="teneleven_geolocator_address_locator" />
         </service>
     </services>
 

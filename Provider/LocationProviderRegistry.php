@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Teneleven\Bundle\GeolocatorBundle\Provider;
 
 /**
@@ -9,7 +8,7 @@ namespace Teneleven\Bundle\GeolocatorBundle\Provider;
 class LocationProviderRegistry
 {
     /**
-     * @var array
+     * @var LocationProviderInterface[]
      */
     protected $providers;
 
@@ -22,7 +21,7 @@ class LocationProviderRegistry
     }
 
     /**
-     * @return LocationProvider[]
+     * @return LocationProviderInterface[]
      */
     public function getProviders()
     {

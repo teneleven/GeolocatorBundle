@@ -14,10 +14,18 @@ use Teneleven\Bundle\GeolocatorBundle\Model\GeolocatableInterface;
  *
  * @author justinhilles
  */
-class GeoLocatableEventSubscriber implements EventSubscriber
+class GeolocatableEventSubscriber implements EventSubscriber
 {
+    /**
+     * @var GeocoderInterface
+     */
     protected $geocoder;
-    
+
+    /**
+     * Constructor
+     *
+     * @param GeocoderInterface $geocoder
+     */
     public function __construct(GeocoderInterface $geocoder)
     {
         $this->geocoder = $geocoder;
@@ -45,11 +53,11 @@ class GeoLocatableEventSubscriber implements EventSubscriber
     {
         $entity = $eventArgs->getEntity();
 
-        if (!$entity instanceof GeoLocatableInterface) {
+        if (!$entity instanceof GeolocatableInterface) {
             return;
         }
 
-        if ($entity->getLatitude() || $entity->getLongitude()) {
+        if ($entity->getLatitude() && $entity->getLongitude()) {
             return;
         }
 
@@ -86,8 +94,10 @@ class GeoLocatableEventSubscriber implements EventSubscriber
     /**
      * Geocode and set the Entity's latitude and longitude
      */
-    private function geocodeEntity(GeoLocatableInterface $entity)
+    private function geocodeEntity(GeolocatableInterface $entity)
     {
+        throw new \Exception('Not implemented yet.');
+        
         $address = ''; //get this somehow
 
         //exception if not

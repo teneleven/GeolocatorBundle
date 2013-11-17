@@ -22,6 +22,17 @@ class Configuration implements ConfigurationInterface
             ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('geocoder_service')->defaultValue('bazinga_geocoder.geocoder')->end()
+                ->arrayNode('locatables')
+                    ->prototype('array')
+                        ->addDefaultsIfNotSet()
+                        ->children()
+                            ->scalarNode('repository')->defaultNull()->end()
+                            ->integerNode('radius')->defaultNull()->end()
+                            ->integerNode('limit')->defaultNull()->end()
+                            ->variableNode('address_properties')->defaultNull()->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 

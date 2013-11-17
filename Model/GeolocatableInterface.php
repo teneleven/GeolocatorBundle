@@ -2,19 +2,22 @@
 
 namespace Teneleven\Bundle\GeolocatorBundle\Model;
 
-interface GeoLocatableInterface
+/**
+ * Interface implemented by classes that can have geo-coordinates.
+ */
+interface GeolocatableInterface
 {
     /**
      * Get Latitude.
      *
      * @return float
      */
-    public function getLatitude();	
+    public function getLatitude();
 
     /**
      * Set Latitude.
      */
-    public function setLatitude($latitude);	
+    public function setLatitude($latitude);
 
     /**
      * Get Longitude.

@@ -1,5 +1,4 @@
 {% extends teneleven_geolocator_layout is defined ? teneleven_geolocator_layout : 'TenelevenGeolocatorBundle::layout.html.twig' %}
-
 {# you can define block teneleven_geolocator_item_window to customize info window content for each location #}
 
 {% block teneleven_geolocator_body %}
@@ -17,7 +16,7 @@
                 <form class="form-horizontal" role="form" method="GET">
                     <div class="row-gutterless">
                         <div class="col-sm-8">
-                            {{ form_widget(form, { 'attr': { 'placeholder': 'Full Address or Zip Code', 'class': 'form-control' } }) }}
+                            {{ form_row(form.location, { 'label': false, 'attr': { 'placeholder': 'Full Address or Zip Code', 'class': 'form-control' } }) }}
                         </div>
                         <div class="col-sm-4 last">
                             <button type="submit" class="btn btn-primary btn-block">Submit <i class="icon icon-dotted-arrow-right"></i></button>
@@ -25,9 +24,8 @@
                     </div>
                 </form>
             {% endblock %}
-
-            {% if searchLocation %}
-                <h3>{{ results|length }} Results around "{{ searchLocation.city }}"</h3>
+            {% if result is defined %}
+                <h3>{{ result.results|length }} Results around "{{ result.center.city }}"</h3>
             {% endif %}
         </div>
     </div>
@@ -37,9 +35,10 @@
         </div>
         <div class="col-sm-4">
             {% block teneleven_geolocator_list %}
+            {% if result is defined %}
             <ul class="list-group teneleven-geolocator-list" style="height: {{ map.stylesheetOptions.height }}; overflow: auto;">
-                {% for id, result in results %}
-                    <li class="list-group-item teneleven-geolocator-item"{% if jsIds.markers[id] is defined %} data-marker-id="{{ jsIds.markers[id] }}"{% endif %}{% if jsIds.windows[id] is defined %} data-window-id="{{ jsIds.windows[id] }}"{% endif %}>
+                {% for id, result in result.results %}
+                    <li class="list-group-item teneleven-geolocator-item"{% if result.mapMarkerId %} data-marker-id="{{ result.mapMarkerId }}"{% endif %}{% if result.mapWindowId %} data-window-id="{{ result.mapWindowId }}"{% endif %}>
                         {% block teneleven_geolocator_list_item %}
                             <h4>Result Listing</h4>
                             <p>To be customized.</p>
@@ -47,6 +46,7 @@
                     </li>
                 {% endfor %}
             </ul>
+            {% endif %}
             {% endblock %}
         </div>
     </div>

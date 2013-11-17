@@ -10,6 +10,16 @@
 </head>
 <body>
     <div class="container">
+        {% block flashes %}
+            {% for name, flashes in app.session.flashbag.all if name in ['success', 'error'] %}
+                {% for flash in flashes %}
+                    <div class="alert alert-{{ name == 'error' ? 'danger' : name }}">
+                        <button type="button" class="close" aria-hidden="true">&times;</button>
+                        {{ flash|trans }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        {% endblock %}
         {% block teneleven_geolocator_body %}{% endblock %}
     </div>
     {% block javascripts %}

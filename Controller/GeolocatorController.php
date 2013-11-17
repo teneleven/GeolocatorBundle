@@ -3,9 +3,11 @@
 namespace Teneleven\Bundle\GeolocatorBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\Form;
+use Geocoder\Exception\QuotaExceededException;
 use Symfony\Component\HttpFoundation\Request;
-use Teneleven\Bundle\GeolocatorBundle\Model\GeoLocatableInterface;
+use Teneleven\Bundle\GeolocatorBundle\Model\GeolocatableInterface;
+use Teneleven\Bundle\GeolocatorBundle\Model\Result;
+use Teneleven\Bundle\GeolocatorBundle\Model\Search;
 use Teneleven\Bundle\GeolocatorBundle\Provider\LocationProviderInterface;
 
 /**
@@ -16,43 +18,38 @@ class GeolocatorController extends Controller
     /**
      * Displays a geo-locator screen with map, form, and locations
      *
-     * @param string $entity the entity key that the provider is registered under
+     * @param string $entity   The entity key that the provider is registered under
      * @param Request $request
-     * @param string $template
+     * @param string $template The template to render
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function locate($entity, Request $request, $template = 'TenelevenGeolocatorBundle::results.html.twig')
     {
         $provider = $this->getLocationProvider($entity);
-        $form = $this->get('form.factory')->createNamed('query', $provider->getFilterFormType(), null, array('method' => 'GET'));
+        $form = $this->get('form.factory')->createNamed('', $provider->getFilterFormType(), null, array('method' => 'GET', 'csrf_protection' => false));
 
-        $results = array();
-
-        if ($form->handleRequest($request)->isValid()) {
-            $results = $provider->findLocations($form->getData());
+        try {
+            $form->handleRequest($request);
+        } catch (QuotaExceededException $e) {
+            $this->get('logger')->error($e->getMessage());
+            $this->get('session')->getFlashBag()->add('error', 'Sorry, this locator has exceeded the quota for location look-ups. Please try again at a later time.');
         }
 
-        return $this->renderLocations($template, $results, $form);
-    }
+        if (!$form->isValid()) {
+            return $this->render($template, array(
+                'map' => $this->getMap(),
+                'form' => $form->createView()
+            ));
+        }
 
-    /**
-     * Helper method to render the response
-     *
-     * @param string $template
-     * @param array $results
-     * @param Form $form
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    protected function renderLocations($template, $results, Form $form)
-    {
+        $result = $provider->findLocations($form);
+        $map = $this->buildMap($template, $result);
+
         return $this->render($template, array(
             'form' => $form->createView(),
-            'results' => $results,
-            'searchLocation' => $form->isSubmitted() && $form->isValid() ? $form->getData() : null,
-            'map' => $this->buildMap($template, $results, $jsIds),
-            'jsIds' => $jsIds
+            'result' => $result,
+            'map' => $map
         ));
     }
 
@@ -60,18 +57,24 @@ class GeolocatorController extends Controller
      * Builds a map of locations
      *
      * @param string $template
-     * @param array $results
-     * @param array $jsIds
+     * @param Search $result
      *
      * @return \Ivory\GoogleMap\Map
      */
-    protected function buildMap($template, $results, &$jsIds)
+    protected function buildMap($template, Search $result)
     {
-        $jsIds = array('markers' => array(), 'windows' => array());
-        $twigTemplate = $this->get('twig')->loadTemplate($template);
         $map = $this->getMap();
 
-        foreach ($results as $id => $result) {
+        if (!$result->hasResults()) { //in case of no result we center on the searched location
+            $map->setCenter($result->getCenter()->getLatitude(), $result->getCenter()->getLongitude());
+
+            return $map;
+        }
+
+        $twigTemplate = $this->get('twig')->loadTemplate($template);
+        $map->setAutoZoom(true); //this is important to set before adding markers
+
+        foreach ($result->getResults() as $result) { /* @var $result Result */
 
             $location = $result->location;
 
@@ -91,11 +94,10 @@ class GeolocatorController extends Controller
                 ));
 
                 $marker->setInfoWindow($infoWindow);
-                $jsIds['windows'][$id] = $infoWindow->getJavascriptVariable();
+                $result->mapWindowId = $infoWindow->getJavascriptVariable();
             }
 
-            $jsIds['markers'][$id] = $marker->getJavascriptVariable();
-
+            $result->mapMarkerId = $marker->getJavascriptVariable();
             $map->addMarker($marker);
         }
 
@@ -103,6 +105,8 @@ class GeolocatorController extends Controller
     }
 
     /**
+     * Get the specified location provider
+     *
      * @param string $entity
      * @return LocationProviderInterface
      */

@@ -1,8 +1,9 @@
 <?php
 
-
 namespace Teneleven\Bundle\GeolocatorBundle\Provider;
-use Geocoder\Result\ResultInterface;
+
+use Symfony\Component\Form\Form;
+use Teneleven\Bundle\GeolocatorBundle\Model\Search;
 
 /**
  * Interface implemented by classes that provide locations
@@ -19,31 +20,15 @@ interface LocationProviderInterface
     /**
      * Find locations based on criteria
      *
-     * @param mixed $criteria
-     * @return \Traversable
+     * @param Form $form
+     * @return Search
      */
-    public function findLocations($criteria);
+    public function findLocations(Form $form);
 
     /**
-     * Get locations that need to be geocoded
+     * Get locations that need to be geo-coded
      *
-     * @return \Traversable
+     * @return array
      */
     public function getUncodedLocations();
-
-    /**
-     * Get a geocodable address from object
-     *
-     * @param $object
-     * @return string
-     */
-    public function extractAddress($object);
-
-    /**
-     * Update geocoordinates
-     *
-     * @param $object
-     * @param ResultInterface $result
-     */
-    public function updateGeocoordinates($object, ResultInterface $result);
 }

@@ -6,12 +6,22 @@ use Geocoder\Exception\NoResultException;
 use Geocoder\GeocoderInterface;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
-use Symfony\Component\Form\Exception\UnexpectedTypeException;
 
+/**
+ * Transformer which turns a string into a geocoded address
+ */
 class StringToGeocodedTransformer implements DataTransformerInterface
 {
+    /**
+     * @var GeocoderInterface
+     */
     protected $geocoder;
 
+    /**
+     * Constructor
+     *
+     * @param GeocoderInterface $geocoder
+     */
     public function __construct(GeocoderInterface $geocoder)
     {
         $this->geocoder = $geocoder;
@@ -22,7 +32,7 @@ class StringToGeocodedTransformer implements DataTransformerInterface
      */
     public function transform($value)
     {
-        return ''; //@todo implement better way
+        return ''; //@todo implement way to convert a geo result to a string?
     }
 
     /**
