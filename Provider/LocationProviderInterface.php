@@ -20,7 +20,7 @@ interface LocationProviderInterface
     /**
      * Find locations based on criteria
      *
-     * @param Form $form
+     * @param  Form   $form
      * @return Search
      */
     public function findLocations(Form $form);

@@ -23,7 +23,7 @@ class AddressExtractorRegistry
     /**
      * Register an extractor under the specified key
      *
-     * @param string $key
+     * @param string                    $key
      * @param AddressExtractorInterface $extractor
      */
     public function registerExtractor($key, AddressExtractorInterface $extractor)
@@ -34,7 +34,7 @@ class AddressExtractorRegistry
     /**
      * Has extractor?
      *
-     * @param string $key
+     * @param  string  $key
      * @return Boolean
      */
     public function hasExtractor($key)
@@ -45,7 +45,7 @@ class AddressExtractorRegistry
     /**
      * Get the extractor for the specified key
      *
-     * @param string $key
+     * @param  string                    $key
      * @return AddressExtractorInterface
      * @throws \InvalidArgumentException
      */

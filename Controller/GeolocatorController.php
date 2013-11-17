@@ -18,9 +18,9 @@ class GeolocatorController extends Controller
     /**
      * Displays a geo-locator screen with map, form, and locations
      *
-     * @param string $entity   The entity key that the provider is registered under
+     * @param string  $entity   The entity key that the provider is registered under
      * @param Request $request
-     * @param string $template The template to render
+     * @param string  $template The template to render
      *
      * @return Response
      */
@@ -107,7 +107,7 @@ class GeolocatorController extends Controller
     /**
      * Get the specified location provider
      *
-     * @param string $entity
+     * @param  string                    $entity
      * @return LocationProviderInterface
      */
     public function getLocationProvider($entity)

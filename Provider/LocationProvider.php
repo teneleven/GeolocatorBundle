@@ -34,8 +34,8 @@ class LocationProvider implements LocationProviderInterface
      * Constructor
      *
      * @param ObjectRepository $repository
-     * @param integer $radius The search radius in miles
-     * @param integer $limit
+     * @param integer          $radius     The search radius in miles
+     * @param integer          $limit
      */
     public function __construct(ObjectRepository $repository, $radius = null, $limit = null)
     {
@@ -60,7 +60,7 @@ class LocationProvider implements LocationProviderInterface
     }
 
     /**
-     * @param ResultInterface $searchCenter
+     * @param  ResultInterface $searchCenter
      * @return QueryBuilder
      */
     protected function getQueryBuilder(ResultInterface $searchCenter)
@@ -91,8 +91,8 @@ class LocationProvider implements LocationProviderInterface
     /**
      * Helper method to decorate search results
      *
-     * @param ResultInterface $searchCenter
-     * @param array $results
+     * @param  ResultInterface $searchCenter
+     * @param  array           $results
      * @return Search
      */
     protected function decorateResults(ResultInterface $searchCenter, array $results)

@@ -12,7 +12,7 @@ class UnitConverter
     /**
      * Convert KM to Miles
      *
-     * @param float $km
+     * @param  float $km
      * @return float
      */
     public static function kmToMiles($km)
@@ -23,7 +23,7 @@ class UnitConverter
     /**
      * Convert Miles to KM
      *
-     * @param float $miles
+     * @param  float $miles
      * @return float
      */
     public static function milesToKm($miles)

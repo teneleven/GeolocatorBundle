@@ -43,11 +43,11 @@ class GeolocatableEventSubscriber implements EventSubscriber
             'preUpdate',
         );
     }
-    
+
     /**
-     * Sets a new Entity's latitude and longitude if not present 
-     * 
-     * @param LifecycleEventArgs $eventArgs 
+     * Sets a new Entity's latitude and longitude if not present
+     *
+     * @param LifecycleEventArgs $eventArgs
      */
     public function prePersist(LifecycleEventArgs $eventArgs)
     {
@@ -63,12 +63,12 @@ class GeolocatableEventSubscriber implements EventSubscriber
 
         $this->geocodeEntity($entity);
     }
-    
+
     /**
      * Sets and updates Entity's latitude and longitude if not present
      * or any part of address was updated
-     * 
-     * @param PreUpdateEventArgs $eventArgs 
+     *
+     * @param PreUpdateEventArgs $eventArgs
      */
     public function preUpdate(PreUpdateEventArgs $eventArgs)
     {
@@ -90,14 +90,14 @@ class GeolocatableEventSubscriber implements EventSubscriber
             $uow->recomputeSingleEntityChangeSet($meta, $entity);
         }
     }
-    
+
     /**
      * Geocode and set the Entity's latitude and longitude
      */
     private function geocodeEntity(GeolocatableInterface $entity)
     {
         throw new \Exception('Not implemented yet.');
-        
+
         $address = ''; //get this somehow
 
         //exception if not

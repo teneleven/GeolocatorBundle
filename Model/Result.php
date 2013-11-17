@@ -40,7 +40,7 @@ class Result
      * Constructor
      *
      * @param object $location
-     * @param float $distance
+     * @param float  $distance
      */
     public function __construct($location, $distance)
     {
