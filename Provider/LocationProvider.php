@@ -49,7 +49,7 @@ class LocationProvider implements LocationProviderInterface
      */
     public function findLocations(Form $form)
     {
-        $searchCenter = $form->getData();
+        $searchCenter = $form->get('location')->getData();
 
         $results = $this->getQueryBuilder($searchCenter)
             ->orderBy('distance')
