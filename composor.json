@@ -2,12 +2,12 @@
   "name": "teneleven/geolocator-bundle",
   "version": "0.2",
   "source": {
-    "type": "git",
-    "url": "git@teneleven.beanstalkapp.com:/geolocatorbundle.git",
-    "reference": "master"
+      "type": "git",
+      "url": "git@teneleven.beanstalkapp.com:/teneleven/geolocatorbundle.git",
+      "reference": "master"
   },
   "autoload": {
-    "psr-0": { "Teneleven\\Bundle\\GeolocatorBundle": "" }
+      "psr-0": { "Teneleven\\Bundle\\GeolocatorBundle": "" }
   },
   "target-dir": "Teneleven/Bundle/GeolocatorBundle"
 }
