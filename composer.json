@@ -14,5 +14,5 @@
     "willdurand/geocoder-bundle": "~1.2",
     "egeloen/google-map-bundle": "*",
     "craue/geo-bundle": "~1.0"
-}
+  }
 }
