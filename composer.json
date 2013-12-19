@@ -1,18 +1,12 @@
 {
-  "name": "teneleven/geolocator-bundle",
-  "version": "0.2",
-  "source": {
-      "type": "git",
-      "url": "git@teneleven.beanstalkapp.com:/teneleven/geolocatorbundle.git",
-      "reference": "master"
-  },
-  "autoload": {
-      "psr-0": { "Teneleven\\Bundle\\GeolocatorBundle": "" }
-  },
-  "target-dir": "Teneleven/Bundle/GeolocatorBundle",
-  "require": {
-    "willdurand/geocoder-bundle": "~1.2",
-    "egeloen/google-map-bundle": "*",
-    "craue/geo-bundle": "~1.0"
-  }
+    "name": "teneleven/geolocator-bundle",
+    "autoload": {
+        "psr-0": { "Teneleven\\Bundle\\GeolocatorBundle": "" }
+    },
+    "target-dir": "Teneleven/Bundle/GeolocatorBundle",
+    "require": {
+        "willdurand/geocoder-bundle": "~1.2",
+        "egeloen/google-map-bundle": "*",
+        "craue/geo-bundle": "~1.0"
+    }
 }

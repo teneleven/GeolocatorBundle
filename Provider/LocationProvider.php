@@ -2,7 +2,7 @@
 
 namespace Teneleven\Bundle\GeolocatorBundle\Provider;
 
-use Doctrine\Common\Persistence\ObjectRepository;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Geocoder\Result\ResultInterface;
 use Symfony\Component\Form\Form;
@@ -16,7 +16,7 @@ use Teneleven\Bundle\GeolocatorBundle\Util\UnitConverter;
 class LocationProvider implements LocationProviderInterface
 {
     /**
-     * @var ObjectRepository
+     * @var EntityRepository
      */
     protected $repository;
 
@@ -33,11 +33,11 @@ class LocationProvider implements LocationProviderInterface
     /**
      * Constructor
      *
-     * @param ObjectRepository $repository
+     * @param EntityRepository $repository
      * @param integer          $radius     The search radius in miles
      * @param integer          $limit
      */
-    public function __construct(ObjectRepository $repository, $radius = null, $limit = null)
+    public function __construct(EntityRepository $repository, $radius = null, $limit = null)
     {
         $this->repository = $repository;
         $this->radius = $radius;
