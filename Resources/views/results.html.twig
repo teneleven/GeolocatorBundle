@@ -6,20 +6,20 @@
         <div class="col-sm-8">
             {% block teneleven_geolocator_header %}
                 <h1>Anything Locator</h1>
-                <p class="lead-in">Customize this template by extending it on the project level and overriding specific blocks.</p>
+                <p>Customize this template by extending it on the project level and overriding specific blocks.</p>
             {% endblock %}
         </div>
         <div class="col-sm-4 teneleven-geolocator-form-container">
             {% block teneleven_geolocator_form %}
                 <legend>Search by Address or Zip Code</legend>
                 {{ form_errors(form) }}
-                <form class="form-horizontal" role="form" method="GET">
-                    <div class="row-gutterless">
+                <form role="form" method="GET">
+                    <div class="row">
                         <div class="col-sm-8">
-                            {{ form_row(form.location, { 'label': false, 'attr': { 'placeholder': 'Address or Zip Code', 'class': 'form-control' } }) }}
+                            {{ form_row(form.location, { 'label': false, 'attr': { 'placeholder': 'Full Address or Zip Code', 'class': 'form-control' } }) }}
                         </div>
-                        <div class="col-sm-4 last">
-                            <button type="submit" class="btn btn-primary btn-block">Submit <i class="icon icon-dotted-arrow-right"></i></button>
+                        <div class="col-sm-4">
+                            <button type="submit" class="btn btn-primary btn-block">Submit</button>
                         </div>
                     </div>
                 </form>
@@ -29,7 +29,7 @@
             {% endif %}
         </div>
     </div>
-    <div class="row-gutterless teneleven-geolocator-content">
+    <div class="row teneleven-geolocator-content">
         <div class="col-sm-8 teneleven-geolocator-map-container" data-map-id="{{ map.javascriptVariable }}">
             {{ google_map_container(map) }}
         </div>
