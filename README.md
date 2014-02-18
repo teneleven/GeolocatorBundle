@@ -4,6 +4,8 @@ Teneleven Geolocator Bundle
 This bundle adds the ability to make your models geo-searchable and displayed on a map.
 Example uses are store locators, apartment finders, nearest bus stops.. any geo-searchable scenario you can dream up.
 
+![Example](https://f.cloud.github.com/assets/624921/2199113/430a8236-98d1-11e3-8c9e-1e4aad3eacee.JPG)
+
 Out of the box the bundle works with Doctrine ORM, but support for other persistence layers is trivial to implement.
 
 To keep the bundle lean and mean we leverage other great bundles where possible, such as:
