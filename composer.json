@@ -1,5 +1,7 @@
 {
     "name": "teneleven/geolocator-bundle",
+    "description": "Makes your models geo-searchable on a google map",
+    "keywords": ["locator", "geo locator", "map", "store locator", "location search", "geo search"],
     "license": "MIT",
     "type": "symfony-bundle",
     "authors": [
