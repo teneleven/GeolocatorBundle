@@ -1,5 +1,14 @@
 <?php
 
+/*
+* This file is part of the Teneleven Geolocator Bundle.
+*
+* (c) Teneleven Interactive
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+*/
+
 namespace Teneleven\Bundle\GeolocatorBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -12,6 +21,8 @@ use Symfony\Component\DependencyInjection\Loader;
 
 /**
  * This class configures the Teneleven Geolocator bundle
+ *
+ * @author Daniel Richter <danny@1011i.com>
  */
 class TenelevenGeolocatorExtension extends Extension implements PrependExtensionInterface
 {

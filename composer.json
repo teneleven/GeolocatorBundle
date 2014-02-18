@@ -1,5 +1,15 @@
 {
     "name": "teneleven/geolocator-bundle",
+    "license": "MIT",
+    "type": "symfony-bundle",
+    "authors": [
+        {
+            "name": "Daniel Richter",
+            "email": "danny@1011i.com",
+            "homepage": "http://www.codemassacre.com",
+            "role": "Developer"
+        }
+    ],
     "autoload": {
         "psr-0": { "Teneleven\\Bundle\\GeolocatorBundle": "" }
     },

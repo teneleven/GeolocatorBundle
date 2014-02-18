@@ -1,9 +1,20 @@
 <?php
 
+/*
+* This file is part of the Teneleven Geolocator Bundle.
+*
+* (c) Teneleven Interactive
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+*/
+
 namespace Teneleven\Bundle\GeolocatorBundle\Extractor;
 
 /**
  * Registry for address extractors
+ *
+ * @author Daniel Richter <danny@1011i.com>
  */
 class AddressExtractorRegistry
 {

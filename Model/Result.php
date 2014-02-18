@@ -1,10 +1,21 @@
 <?php
 
+/*
+* This file is part of the Teneleven Geolocator Bundle.
+*
+* (c) Teneleven Interactive
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+*/
+
 namespace Teneleven\Bundle\GeolocatorBundle\Model;
 
 /**
- * Result represents a found location of a geo-locator search.
+ * Represents a found location of a geo-locator search.
  * Encapsulates the located object along with the distance to the search area.
+ *
+ * @author Daniel Richter <danny@1011i.com>
  */
 class Result
 {
