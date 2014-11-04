@@ -45,7 +45,7 @@ in a shell.
 public function registerBundles() {
 	$bundles = array(
 		// ...
-		new Teneleven\Bundle\Geolocator\TenelevenGeolocatorBundle(),
+		new Teneleven\Bundle\GeolocatorBundle\TenelevenGeolocatorBundle(),
 	);
 	// ...
 }
