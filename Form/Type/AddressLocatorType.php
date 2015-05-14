@@ -13,6 +13,7 @@ namespace Teneleven\Bundle\GeolocatorBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * Form type which collects a location
@@ -26,7 +27,10 @@ class AddressLocatorType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('location', 'teneleven_geolocator_geocoded_address');
+        $builder->add('location', 'teneleven_geolocator_geocoded_address', array(
+            'required' => true,
+            'constraints' => array(new NotBlank())
+        ));
     }
 
     /**
