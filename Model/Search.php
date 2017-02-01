@@ -11,7 +11,7 @@
 
 namespace Teneleven\Bundle\GeolocatorBundle\Model;
 
-use Geocoder\Result\ResultInterface;
+use Geocoder\Model\Coordinates;
 
 /**
  * Represents a geo-locator search.
@@ -23,24 +23,24 @@ class Search
     /**
      * The center of the search
      *
-     * @var ResultInterface
+     * @var Coordinates
      */
     protected $center;
 
     /**
      * The hits the search returned
      *
-     * @var GeolocatorResult[]
+     * @var Result[]
      */
     protected $results = array();
 
     /**
      * Set the center
      *
-     * @param ResultInterface $center
+     * @param Coordinates $center
      * @return $this
      */
-    public function setCenter(ResultInterface $center)
+    public function setCenter(Coordinates $center)
     {
         $this->center = $center;
 
@@ -50,7 +50,7 @@ class Search
     /**
      * Get the center
      *
-     * @return ResultInterface
+     * @return Coordinates
      */
     public function getCenter()
     {

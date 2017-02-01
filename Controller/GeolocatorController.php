@@ -11,9 +11,14 @@
 
 namespace Teneleven\Bundle\GeolocatorBundle\Controller;
 
+use Ivory\GoogleMap\Base\Coordinate;
+use Ivory\GoogleMap\Map;
+use Ivory\GoogleMap\Overlay\InfoWindow;
+use Ivory\GoogleMap\Overlay\Marker;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Geocoder\Exception\QuotaExceededException;
+use Geocoder\Exception\QuotaExceeded;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Teneleven\Bundle\GeolocatorBundle\Model\GeolocatableInterface;
 use Teneleven\Bundle\GeolocatorBundle\Model\Result;
 use Teneleven\Bundle\GeolocatorBundle\Model\Search;
@@ -35,21 +40,25 @@ class GeolocatorController extends Controller
      *
      * @return Response
      */
-    public function locate($entity, Request $request, $template = 'TenelevenGeolocatorBundle::results.html.twig')
+    public function locate($entity, Request $request, $template = null)
     {
+        if (!$template) {
+            $template = 'TenelevenGeolocatorBundle::results.html.twig';
+        }
+
         $provider = $this->getLocationProvider($entity);
         $form = $this->get('form.factory')->createNamed('', $provider->getFilterFormType(), null, array('method' => 'GET', 'csrf_protection' => false));
 
         try {
             $form->handleRequest($request);
-        } catch (QuotaExceededException $e) {
+        } catch (QuotaExceeded $e) {
             $this->get('logger')->error($e->getMessage());
             $this->get('session')->getFlashBag()->add('error', 'Sorry, this locator has exceeded the quota for location look-ups. Please try again at a later time.');
         }
 
         if (!$form->isValid()) {
             return $this->render($template, array(
-                'map' => $this->getMap(),
+                'map' => $map = $this->getMap(),
                 'form' => $form->createView()
             ));
         }
@@ -62,6 +71,15 @@ class GeolocatorController extends Controller
             'result' => $result,
             'map' => $map
         ));
+    }
+
+    private function getMap()
+    {
+        $map = new Map();
+        $map->setStylesheetOption('height', '500px');
+        $map->setStylesheetOption('width', '100%');
+
+        return $map;
     }
 
     /**
@@ -77,7 +95,12 @@ class GeolocatorController extends Controller
         $map = $this->getMap();
 
         if (!$result->hasResults()) { //in case of no result we center on the searched location
-            $map->setCenter($result->getCenter()->getLatitude(), $result->getCenter()->getLongitude());
+            $map->setCenter(
+                new Coordinate(
+                    $result->getCenter()->getLatitude(),
+                    $result->getCenter()->getLongitude()
+                )
+            );
 
             return $map;
         }
@@ -93,23 +116,26 @@ class GeolocatorController extends Controller
                 continue;
             }
 
-            $marker = $this->getMarker();
-            $marker->setPosition($location->getLatitude(), $location->getLongitude());
+            $marker = new Marker(
+                new Coordinate(
+                    $location->getLatitude(),
+                    $location->getLongitude()
+                )
+            );
 
-            if ($twigTemplate->hasBlock('teneleven_geolocator_item_window')) {
+            if ($twigTemplate->hasBlock('teneleven_geolocator_item_window', [])) {
 
-                $infoWindow = $this->getInfoWindow();
-                $infoWindow->setContent($twigTemplate->renderBlock(
+                $infoWindow = new InfoWindow($twigTemplate->renderBlock(
                     'teneleven_geolocator_item_window',
                     array('result' => $result)
                 ));
 
                 $marker->setInfoWindow($infoWindow);
-                $result->mapWindowId = $infoWindow->getJavascriptVariable();
+                $result->mapWindowId = $infoWindow->getVariable();
             }
 
-            $result->mapMarkerId = $marker->getJavascriptVariable();
-            $map->addMarker($marker);
+            $result->mapMarkerId = $marker->getVariable();
+            $map->getOverlayManager()->addMarker($marker);
         }
 
         return $map;
@@ -126,29 +152,5 @@ class GeolocatorController extends Controller
         $providers = $this->get('teneleven.geolocator.providers');
 
         return $providers->getProvider($entity);
-    }
-
-    /**
-     * @return \Ivory\GoogleMap\Map
-     */
-    public function getMap()
-    {
-        return $this->get('ivory_google_map.map');
-    }
-
-    /**
-     * @return \Ivory\GoogleMap\Overlays\Marker
-     */
-    public function getMarker()
-    {
-        return $this->get('ivory_google_map.marker');
-    }
-
-    /**
-     * @return \Ivory\GoogleMap\Overlays\InfoWindow
-     */
-    public function getInfoWindow()
-    {
-        return $this->get('ivory_google_map.info_window');
     }
 }

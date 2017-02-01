@@ -83,10 +83,10 @@ class TenelevenGeolocatorExtension extends Extension implements PrependExtension
             'bazinga_geocoder' => array(
                 'providers' => array('google_maps' => null)
             ),
-            'ivory_google_map' => array(
-                'map' => array('width' => "100%", 'height' => "600px"),
-                'info_window' => array('auto_close' => true)
-            ),
+//            'ivory_google_map' => array(
+//                'map' => array('width' => "100%", 'height' => "600px"),
+//                'info_window' => array('auto_close' => true)
+//            ),
             'doctrine' => array(
                 'orm' => array(
                     'dql' => array(
