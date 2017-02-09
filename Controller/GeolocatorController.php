@@ -47,7 +47,11 @@ class GeolocatorController extends Controller
         }
 
         $provider = $this->getLocationProvider($entity);
-        $form = $this->get('form.factory')->createNamed('', $provider->getFilterFormType(), null, array('method' => 'GET', 'csrf_protection' => false));
+        $form = $this->get('form.factory')->createNamed('', $provider->getFilterFormType(), null, array(
+            'method' => 'GET', 
+            'csrf_protection' => false,
+            'allow_extra_fields' => true,
+        ));
 
         try {
             $form->handleRequest($request);
