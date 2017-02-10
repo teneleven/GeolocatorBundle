@@ -20,6 +20,7 @@ use Geocoder\Exception\QuotaExceeded;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Teneleven\Bundle\GeolocatorBundle\Model\GeolocatableInterface;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Teneleven\Bundle\GeolocatorBundle\Model\Result;
 use Teneleven\Bundle\GeolocatorBundle\Model\Search;
 use Teneleven\Bundle\GeolocatorBundle\Provider\LocationProviderInterface;
