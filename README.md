@@ -25,7 +25,17 @@ Require the bundle in your composer.json file:
 ```json
 {
     "require": {
-        "teneleven/geolocator-bundle": "*"
+        "teneleven/geolocator-bundle": "3.*"
+    }
+}
+```
+
+If you are on Symfony 2, you might prefer to lock to the v2 version:
+
+```json
+{
+    "require": {
+        "teneleven/geolocator-bundle": "2.*"
     }
 }
 ```
