@@ -13,9 +13,8 @@
         }
     ],
     "autoload": {
-        "psr-0": { "Teneleven\\Bundle\\GeolocatorBundle": "" }
+        "psr-4": { "Teneleven\\Bundle\\GeolocatorBundle\\": "" }
     },
-    "target-dir": "Teneleven/Bundle/GeolocatorBundle",
     "require": {
         "willdurand/geocoder-bundle": "~1.2",
         "egeloen/google-map-bundle": "*",

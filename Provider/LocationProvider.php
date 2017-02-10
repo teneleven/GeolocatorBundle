@@ -13,8 +13,9 @@ namespace Teneleven\Bundle\GeolocatorBundle\Provider;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
-use Geocoder\Result\ResultInterface;
+use Geocoder\Model\Coordinates;
 use Symfony\Component\Form\Form;
+use Teneleven\Bundle\GeolocatorBundle\Form\Type\AddressLocatorType;
 use Teneleven\Bundle\GeolocatorBundle\Model\Result;
 use Teneleven\Bundle\GeolocatorBundle\Model\Search;
 use Teneleven\Bundle\GeolocatorBundle\Util\UnitConverter;
@@ -71,10 +72,10 @@ class LocationProvider implements LocationProviderInterface
     }
 
     /**
-     * @param  ResultInterface $searchCenter
+     * @param  Coordinates $searchCenter
      * @return QueryBuilder
      */
-    protected function getQueryBuilder(ResultInterface $searchCenter)
+    protected function getQueryBuilder(Coordinates $searchCenter)
     {
         $queryBuilder = $this->repository->createQueryBuilder('l');
 
@@ -102,11 +103,11 @@ class LocationProvider implements LocationProviderInterface
     /**
      * Helper method to decorate search results
      *
-     * @param  ResultInterface $searchCenter
+     * @param  Coordinates $searchCenter
      * @param  array           $results
      * @return Search
      */
-    protected function decorateResults(ResultInterface $searchCenter, array $results)
+    protected function decorateResults(Coordinates $searchCenter, array $results)
     {
         $search = new Search();
         $search->setCenter($searchCenter);
@@ -132,6 +133,6 @@ class LocationProvider implements LocationProviderInterface
      */
     public function getFilterFormType()
     {
-        return 'teneleven_geolocator_address_locator';
+        return AddressLocatorType::class;
     }
 }

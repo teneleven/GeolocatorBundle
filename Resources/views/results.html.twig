@@ -25,13 +25,14 @@
                 </form>
             {% endblock %}
             {% if result is defined %}
-                <h3>{{ result.results|length }} Results around "{{ result.center.city }}"</h3>
+                {#<h3>{{ result.results|length }} Results around "{{ result.center.city }}"</h3>#}
+                <h3>{{ result.results|length }} Results</h3>
             {% endif %}
         </div>
     </div>
     <div class="row teneleven-geolocator-content">
-        <div class="col-sm-8 teneleven-geolocator-map-container" data-map-id="{{ map.javascriptVariable }}">
-            {{ google_map_container(map) }}
+        <div class="col-sm-8 teneleven-geolocator-map-container" data-map-id="{{ map.variable }}">
+            {{ ivory_google_map_container(map) }}
         </div>
         <div class="col-sm-4">
             {% block teneleven_geolocator_list %}
@@ -59,6 +60,7 @@
 
 {% block javascripts %}
     {{ parent() }}
-    {{ google_map_js(map) }}
-    <script type="text/javascript" src="{{ asset('bundles/tenelevengeolocator/js/load-marker-highlights.js') }}"></script>
+    {{ ivory_google_map_js(map) }}
+    {{ ivory_google_api([map]) }}
+    {#<script type="text/javascript" src="{{ asset('bundles/tenelevengeolocator/js/load-marker-highlights.js') }}"></script>#}
 {% endblock %}

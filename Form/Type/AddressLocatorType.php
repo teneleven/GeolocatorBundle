@@ -27,17 +27,9 @@ class AddressLocatorType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('location', 'teneleven_geolocator_geocoded_address', array(
+        $builder->add('location', GeocodedAddressType::class, array(
             'required' => true,
             'constraints' => array(new NotBlank())
         ));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'teneleven_geolocator_address_locator';
     }
 }

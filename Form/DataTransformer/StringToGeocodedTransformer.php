@@ -11,8 +11,8 @@
 
 namespace Teneleven\Bundle\GeolocatorBundle\Form\DataTransformer;
 
-use Geocoder\Exception\NoResultException;
-use Geocoder\GeocoderInterface;
+use Geocoder\Exception\NoResult;
+use Geocoder\Geocoder;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
@@ -24,16 +24,16 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
 class StringToGeocodedTransformer implements DataTransformerInterface
 {
     /**
-     * @var GeocoderInterface
+     * @var Geocoder
      */
     protected $geocoder;
 
     /**
      * Constructor
      *
-     * @param GeocoderInterface $geocoder
+     * @param Geocoder $geocoder
      */
-    public function __construct(GeocoderInterface $geocoder)
+    public function __construct(Geocoder $geocoder)
     {
         $this->geocoder = $geocoder;
     }
@@ -57,10 +57,14 @@ class StringToGeocodedTransformer implements DataTransformerInterface
 
         try {
             $result = $this->geocoder->geocode($value);
-        } catch (NoResultException $e) {
+        } catch (NoResult $e) {
             throw new TransformationFailedException(sprintf('%s could not be geolocated', $value));
         }
 
-        return $result;
+        if (!$firstResult = $result->first()) {
+            return null;
+        }
+
+        return $firstResult->getCoordinates();
     }
 }

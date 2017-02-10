@@ -13,6 +13,7 @@ namespace Teneleven\Bundle\GeolocatorBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\DataTransformerInterface;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
@@ -52,14 +53,6 @@ class GeocodedAddressType extends AbstractType
      */
     public function getParent()
     {
-        return 'text';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'teneleven_geolocator_geocoded_address';
+        return TextType::class;
     }
 }

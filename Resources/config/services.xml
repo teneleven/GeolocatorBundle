@@ -29,7 +29,7 @@
                     <argument type="service" id="teneleven.geolocator.geocoder" />
                 </service>
             </argument>
-            <tag name="form.type" alias="teneleven_geolocator_geocoded_address" />
+            <tag name="form.type" />
         </service>
         <service id="teneleven.geolocator.form.address_locator" class="%teneleven.geolocator.form.address_locator.class%">
             <tag name="form.type" alias="teneleven_geolocator_address_locator" />
