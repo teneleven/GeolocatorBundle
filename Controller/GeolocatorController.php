@@ -52,6 +52,16 @@ class GeolocatorController extends Controller
             'csrf_protection' => false,
             'allow_extra_fields' => true,
         ));
+        
+        foreach ($request->query->all() as $key => $value) {
+            if ($form->has($key)) {
+                continue;
+            }
+            
+            $form->add($key, HiddenType::class, [
+                'data' => $value,
+            ]);
+        }
 
         try {
             $form->handleRequest($request);
