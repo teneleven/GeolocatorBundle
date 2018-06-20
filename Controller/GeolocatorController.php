@@ -88,7 +88,7 @@ class GeolocatorController extends Controller
         ));
     }
 
-    private function getMap()
+    protected function getMap()
     {
         $map = new Map();
         $map->setStylesheetOption('height', '500px');
