@@ -16,7 +16,7 @@
         "psr-4": { "Teneleven\\Bundle\\GeolocatorBundle\\": "" }
     },
     "require": {
-        "willdurand/geocoder-bundle": "~1.2",
+        "willdurand/geocoder-bundle": "~5.0",
         "egeloen/google-map-bundle": "*",
         "craue/geo-bundle": "~1.0"
     }
